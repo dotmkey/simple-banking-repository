@@ -58,25 +58,25 @@ public class Interaction {
 
         int choice = scanner.nextInt();
         switch (choice) {
-            case 1:
+            case 1 -> {
                 System.out.println();
                 this.creatingAccount();
                 this.startMenu();
-                break;
-            case 2:
+            }
+            case 2 -> {
                 System.out.println();
                 this.enteringIntoAccount();
-                break;
-            case 0:
+            }
+            case 0 -> {
                 System.out.println();
                 this.exiting();
-                break;
-            default:
+            }
+            default -> {
                 System.out.println();
                 System.out.println("Unsupported choice!");
                 System.out.println();
                 this.startMenu();
-                break;
+            }
         }
     }
 
@@ -133,41 +133,41 @@ public class Interaction {
 
         int choice = scanner.nextInt();
         switch (choice) {
-            case 1:
+            case 1 -> {
                 System.out.println("Balance: " + account.balance());
                 System.out.println();
                 this.accountMenu();
-                break;
-            case 2:
+            }
+            case 2 -> {
                 this.addingIncome();
                 System.out.println();
                 this.accountMenu();
-                break;
-            case 3:
+            }
+            case 3 -> {
                 this.transfering();
                 System.out.println();
                 this.accountMenu();
-                break;
-            case 4:
+            }
+            case 4 -> {
                 this.closingAccount();
                 System.out.println();
                 this.startMenu();
-                break;
-            case 5:
+            }
+            case 5 -> {
                 this.logoutUseCase.execute();
                 System.out.println("You have successfully logged out!");
                 System.out.println();
                 this.startMenu();
-                break;
-            case 0:
+            }
+            case 0 -> {
                 System.out.println();
                 this.exiting();
-                break;
-            default:
+            }
+            default -> {
                 System.out.println("Unsupported choice!");
                 System.out.println();
                 this.accountMenu();
-                break;
+            }
         }
     }
 
