@@ -4,10 +4,10 @@ import com.dotmkey.simplebankingsystem.application.usecase.*;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.CardNumberService;
 import com.dotmkey.simplebankingsystem.domain.model.RawCredentials;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.AccountOfCardNumberDoesNotExistException;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.IncorrectCardPINException;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.InsufficientFundsException;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.TryingToTransferBetweenTheSameAccountsException;
+import com.dotmkey.simplebankingsystem.domain.model.statement.AccountCanAffordDebit;
+import com.dotmkey.simplebankingsystem.domain.model.statement.AccountOfCardNumberExists;
+import com.dotmkey.simplebankingsystem.domain.model.statement.CardPINIsCorrectForAccount;
+import com.dotmkey.simplebankingsystem.domain.model.statement.TransferBetweenDifferentAccounts;
 
 import java.util.Scanner;
 
@@ -101,7 +101,9 @@ public class Interaction {
 
         try {
             this.loginUseCase.execute(cardNumber, cardPIN);
-        } catch (AccountOfCardNumberDoesNotExistException | IncorrectCardPINException e) {
+        } catch (
+            AccountOfCardNumberExists.AccountOfCardNumberDoesNotExistException
+                | CardPINIsCorrectForAccount.IncorrectCardPINException e) {
             System.out.println("Wrong card number or PIN!");
             System.out.println();
             this.startMenu();
@@ -196,7 +198,7 @@ public class Interaction {
 
         try {
             this.getAccountUseCase.execute(cardNumber);
-        } catch (AccountOfCardNumberDoesNotExistException e) {
+        } catch (AccountOfCardNumberExists.AccountOfCardNumberDoesNotExistException e) {
             System.out.println("Such a card does not exist.");
             System.out.println();
             return;
@@ -208,11 +210,11 @@ public class Interaction {
 
         try {
             this.transferUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber(), cardNumber, amount);
-        } catch (InsufficientFundsException e) {
+        } catch (AccountCanAffordDebit.InsufficientFundsException e) {
             System.out.println("Not enough money!");
             System.out.println();
             return;
-        } catch (TryingToTransferBetweenTheSameAccountsException e) {
+        } catch (TransferBetweenDifferentAccounts.TryingToTransferBetweenTheSameAccountsException e) {
             System.out.println("It is your card number. Enter another one.");
             System.out.println();
             return;

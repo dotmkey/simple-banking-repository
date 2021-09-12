@@ -2,7 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.DomainRegistry;
 import com.dotmkey.simplebankingsystem.domain.Statement;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.AccountOfCardNumberDoesNotExistException;
 
 public class AccountOfCardNumberExists extends Statement {
 
@@ -19,6 +18,13 @@ public class AccountOfCardNumberExists extends Statement {
 
     @Override
     protected RuntimeException exception() {
-        return new AccountOfCardNumberDoesNotExistException(this.cardNumber);
+        return new AccountOfCardNumberDoesNotExistException();
+    }
+
+    public class AccountOfCardNumberDoesNotExistException extends RuntimeException {
+
+        public AccountOfCardNumberDoesNotExistException() {
+            super(String.format("Account of card number %s does not exist", AccountOfCardNumberExists.this.cardNumber));
+        }
     }
 }

@@ -2,9 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.Statement;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.TryingToTransferBetweenTheSameAccountsException;
-
-import java.util.Objects;
 
 public class TransferBetweenDifferentAccounts extends Statement {
 
@@ -28,6 +25,16 @@ public class TransferBetweenDifferentAccounts extends Statement {
 
     @Override
     protected RuntimeException exception() {
-        return new TryingToTransferBetweenTheSameAccountsException(this.cardNumberFrom);
+        return new TryingToTransferBetweenTheSameAccountsException();
+    }
+
+    public class TryingToTransferBetweenTheSameAccountsException extends RuntimeException {
+
+        public TryingToTransferBetweenTheSameAccountsException() {
+            super(String.format(
+                "The sender and the receiver accounts have the same number = %s",
+                TransferBetweenDifferentAccounts.this.cardNumberFrom
+            ));
+        }
     }
 }

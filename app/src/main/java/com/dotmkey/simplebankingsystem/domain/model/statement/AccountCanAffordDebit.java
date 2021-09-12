@@ -2,7 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.Statement;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.InsufficientFundsException;
 
 public class AccountCanAffordDebit extends Statement {
 
@@ -21,6 +20,17 @@ public class AccountCanAffordDebit extends Statement {
 
     @Override
     protected RuntimeException exception() {
-        return new InsufficientFundsException(this.account.cardNumber(), this.amount);
+        return new InsufficientFundsException();
+    }
+
+    public class InsufficientFundsException extends RuntimeException {
+
+        public InsufficientFundsException() {
+            super(String.format(
+                "Not enough funds on balance of account with card number = %s to transfer amount = %d",
+                AccountCanAffordDebit.this.account.cardNumber(),
+                AccountCanAffordDebit.this.amount
+            ));
+        }
     }
 }

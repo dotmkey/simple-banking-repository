@@ -2,7 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.DomainRegistry;
 import com.dotmkey.simplebankingsystem.domain.Statement;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.CardNumberIsNotUniqueException;
 
 public class CardNumberIsUnique extends Statement {
 
@@ -19,6 +18,13 @@ public class CardNumberIsUnique extends Statement {
 
     @Override
     protected RuntimeException exception() {
-        return new CardNumberIsNotUniqueException(this.cardNumber);
+        return new CardNumberIsNotUniqueException();
+    }
+
+    public class CardNumberIsNotUniqueException extends RuntimeException {
+
+        public CardNumberIsNotUniqueException() {
+            super(String.format("Card number %s is not unique", CardNumberIsUnique.this.cardNumber));
+        }
     }
 }

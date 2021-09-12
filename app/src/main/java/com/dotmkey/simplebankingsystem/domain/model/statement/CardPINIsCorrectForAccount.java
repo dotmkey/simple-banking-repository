@@ -2,7 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.Statement;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.IncorrectCardPINException;
 
 public class CardPINIsCorrectForAccount extends Statement {
 
@@ -22,5 +21,12 @@ public class CardPINIsCorrectForAccount extends Statement {
     @Override
     protected RuntimeException exception() {
         return new IncorrectCardPINException();
+    }
+
+    public class IncorrectCardPINException extends RuntimeException {
+
+        public IncorrectCardPINException() {
+            super("Card PIN is incorrect");
+        }
     }
 }

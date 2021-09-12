@@ -2,7 +2,6 @@ package com.dotmkey.simplebankingsystem.domain.model.statement;
 
 import com.dotmkey.simplebankingsystem.domain.DomainRegistry;
 import com.dotmkey.simplebankingsystem.domain.Statement;
-import com.dotmkey.simplebankingsystem.domain.model.statement.exception.CardNumberIsNotValidException;
 
 public class CardNumberIsValid extends Statement {
 
@@ -19,6 +18,13 @@ public class CardNumberIsValid extends Statement {
 
     @Override
     protected RuntimeException exception() {
-        return new CardNumberIsNotValidException(this.cardNumber);
+        return new CardNumberIsNotValidException();
+    }
+
+    public class CardNumberIsNotValidException extends RuntimeException {
+
+        public CardNumberIsNotValidException() {
+            super(String.format("Card number %s is not valid", CardNumberIsValid.this.cardNumber));
+        }
     }
 }
