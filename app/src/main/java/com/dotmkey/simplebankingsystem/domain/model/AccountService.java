@@ -35,7 +35,10 @@ public class AccountService {
     public void addIncome(String cardNumber, long income) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        var account = this.accountRepository.ofCardNumber(cardNumber).orElseThrow();
+        this.addIncome(this.accountRepository.ofCardNumber(cardNumber).orElseThrow(), income);
+    }
+
+    public void addIncome(Account account, long income) {
         account.updateBalance(account.balance() + income);
 
         this.accountRepository.save(account);
@@ -46,9 +49,14 @@ public class AccountService {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberFrom));
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberTo));
 
-        var accountFrom = this.accountRepository.ofCardNumber(cardNumberFrom).orElseThrow();
-        var accountTo = this.accountRepository.ofCardNumber(cardNumberTo).orElseThrow();
+        this.transfer(
+            this.accountRepository.ofCardNumber(cardNumberFrom).orElseThrow(),
+            this.accountRepository.ofCardNumber(cardNumberTo).orElseThrow(),
+            amount
+        );
+    }
 
+    public void transfer(Account accountFrom, Account accountTo, long amount) {
         Assertion.assertA(new AccountCanAffordDebit(accountFrom, amount));
 
         accountFrom.updateBalance(accountFrom.balance() - amount);
@@ -61,6 +69,10 @@ public class AccountService {
     public void removeAccount(String cardNumber) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        this.accountRepository.remove(this.accountRepository.ofCardNumber(cardNumber).orElseThrow());
+        this.removeAccount(this.accountRepository.ofCardNumber(cardNumber).orElseThrow());
+    }
+
+    public void removeAccount(Account account) {
+        this.accountRepository.remove(account);
     }
 }

@@ -1,9 +1,7 @@
 package com.dotmkey.simplebankingsystem.port.cmd;
 
 import com.dotmkey.simplebankingsystem.application.usecase.*;
-import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.CardNumberService;
-import com.dotmkey.simplebankingsystem.domain.model.RawCredentials;
 import com.dotmkey.simplebankingsystem.domain.model.statement.AccountCanAffordDebit;
 import com.dotmkey.simplebankingsystem.domain.model.statement.AccountOfCardNumberExists;
 import com.dotmkey.simplebankingsystem.domain.model.statement.CardPINIsCorrectForAccount;
@@ -180,7 +178,7 @@ public class Interaction {
         var scanner = new Scanner(System.in);
         var income = scanner.nextLong();
 
-        this.addIncomeUseCase.execute(curAccount.cardNumber(), income);
+        this.addIncomeUseCase.execute(curAccount, income);
 
         System.out.println("Income was added!");
     }
@@ -235,7 +233,7 @@ public class Interaction {
             .execute()
             .orElseThrow(() -> new RuntimeException("Unauthorized"));
 
-        this.removeAccountUseCase.execute(curAccount.cardNumber());
+        this.removeAccountUseCase.execute(curAccount);
         this.logoutUseCase.execute();
         System.out.println("The account has been closed!");
     }

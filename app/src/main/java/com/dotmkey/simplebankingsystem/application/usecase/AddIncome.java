@@ -1,5 +1,6 @@
 package com.dotmkey.simplebankingsystem.application.usecase;
 
+import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.AccountService;
 
 public class AddIncome {
@@ -12,5 +13,9 @@ public class AddIncome {
 
     public void execute(String cardNumber, long income) {
         this.accountService.addIncome(cardNumber, income);
+    }
+
+    public void execute(Account account, long income) {
+        this.accountService.addIncome(account, income);
     }
 }
