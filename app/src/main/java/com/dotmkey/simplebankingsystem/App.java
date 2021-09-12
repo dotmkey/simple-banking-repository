@@ -25,7 +25,7 @@ public class App {
     private final static HashMap<String, Object> argContainer = new HashMap<>();
 
     public static void main(String[] args) {
-        for (int i = 0; i < args.length; i++) {
+        for (var i = 0; i < args.length; i++) {
             if (args[i].equals("-fileName") && i < args.length - 1) {
                 argContainer.put("fileName", args[i + 1]);
             }
@@ -37,7 +37,7 @@ public class App {
 
         resolveDI();
 
-        Interaction interaction = (Interaction) DIContainer.get(Interaction.class.getName());
+        var interaction = (Interaction) DIContainer.get(Interaction.class.getName());
         interaction.execute();
     }
 
@@ -61,7 +61,7 @@ public class App {
 
     private static Connection resolveConnection() {
         if (!DIContainer.containsKey(Connection.class.getName())) {
-            Path path = Paths.get((String) argContainer.get("fileName")).toAbsolutePath();
+            var path = Paths.get((String) argContainer.get("fileName")).toAbsolutePath();
             if (!Files.exists(path)) {
                 try {
                     Files.createFile(path);
@@ -70,12 +70,12 @@ public class App {
                 }
             }
 
-            SQLiteDataSource dataSource = new SQLiteDataSource();
+            var dataSource = new SQLiteDataSource();
             dataSource.setUrl("jdbc:sqlite:" + path);
 
             try {
-                Connection connection = dataSource.getConnection();
-                try (Statement statement = connection.createStatement()) {
+                var connection = dataSource.getConnection();
+                try (var statement = connection.createStatement()) {
                     statement.executeUpdate(
                         "create table if not exists card(" +
                             "id integer primary key, " +

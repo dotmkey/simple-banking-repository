@@ -14,10 +14,10 @@ public class SHA512Hasher implements Hasher {
     public String hash(String message) {
         String digest;
         try {
-            MessageDigest md = MessageDigest.getInstance(ALGORITHM);
-            byte[] bytes = md.digest(message.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
+            var md = MessageDigest.getInstance(ALGORITHM);
+            var bytes = md.digest(message.getBytes(StandardCharsets.UTF_8));
+            var sb = new StringBuilder();
+            for (var aByte : bytes) {
                 sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
             digest = sb.toString();

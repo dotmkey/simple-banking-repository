@@ -23,8 +23,8 @@ public class SQLiteAccountRepository implements AccountRepository {
     }
 
     private void insert(Account account) {
-        String query = "insert into card (number, pin, hashed_pin, balance) values (?, ?, ?, ?)";
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+        var query = "insert into card (number, pin, hashed_pin, balance) values (?, ?, ?, ?)";
+        try (var statement = this.connection.prepareStatement(query)) {
             statement.setString(1, account.cardNumber());
             statement.setString(2, account.cardPIN());
             statement.setString(3, account.hashedCardPIN());
@@ -37,8 +37,8 @@ public class SQLiteAccountRepository implements AccountRepository {
     }
 
     private void update(Account account) {
-        String query = "update card set balance = ? where number = ?";
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+        var query = "update card set balance = ? where number = ?";
+        try (var statement = this.connection.prepareStatement(query)) {
             statement.setLong(1, account.balance());
             statement.setString(2, account.cardNumber());
 
@@ -50,10 +50,10 @@ public class SQLiteAccountRepository implements AccountRepository {
 
     @Override
     public Account ofCardNumber(String cardNumber) {
-        String query = "select * from card where number = ? limit 1";
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+        var query = "select * from card where number = ? limit 1";
+        try (var statement = this.connection.prepareStatement(query)) {
             statement.setString(1, cardNumber);
-            ResultSet resultSet = statement.executeQuery();
+            var resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
                 return null;
@@ -71,8 +71,8 @@ public class SQLiteAccountRepository implements AccountRepository {
     }
 
     public void remove(Account account) {
-        String query = "delete from card where number = ?";
-        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+        var query = "delete from card where number = ?";
+        try (var statement = this.connection.prepareStatement(query)) {
             statement.setString(1, account.cardNumber());
 
             statement.executeUpdate();

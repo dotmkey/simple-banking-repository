@@ -15,7 +15,7 @@ public class Login {
     }
 
     public Account execute(String cardNumber, String cardPIN) {
-        Account account = this.authService.authenticate(cardNumber, cardPIN);
+        var account = this.authService.authenticate(cardNumber, cardPIN);
         this.sessionService.start(account);
 
         return account;

@@ -17,16 +17,16 @@ public class AccountService {
     }
 
     public RawCredentials generate() {
-        Random random = new Random();
+        var random = new Random();
 
         String cardNumber;
         do {
             cardNumber = DomainRegistry.instance().cardNumberService().generate();
         } while (this.accountRepository.ofCardNumber(cardNumber) != null);
 
-        String cardPIN = String.valueOf(random.nextInt(9999 - 1000 + 1) + 1000);
+        var cardPIN = String.valueOf(random.nextInt(9999 - 1000 + 1) + 1000);
 
-        Account account = new Account(cardNumber, cardPIN);
+        var account = new Account(cardNumber, cardPIN);
         this.accountRepository.save(account);
 
         return new RawCredentials(cardNumber, cardPIN);
@@ -35,7 +35,7 @@ public class AccountService {
     public void addIncome(String cardNumber, long income) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        Account account = this.accountRepository.ofCardNumber(cardNumber);
+        var account = this.accountRepository.ofCardNumber(cardNumber);
         account.updateBalance(account.balance() + income);
 
         this.accountRepository.save(account);
@@ -46,8 +46,8 @@ public class AccountService {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberFrom));
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberTo));
 
-        Account accountFrom = this.accountRepository.ofCardNumber(cardNumberFrom);
-        Account accountTo = this.accountRepository.ofCardNumber(cardNumberTo);
+        var accountFrom = this.accountRepository.ofCardNumber(cardNumberFrom);
+        var accountTo = this.accountRepository.ofCardNumber(cardNumberTo);
 
         Assertion.assertA(new AccountCanAffordDebit(accountFrom, amount));
 

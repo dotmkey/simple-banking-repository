@@ -54,9 +54,9 @@ public class Interaction {
         System.out.println("2. Log into account");
         System.out.println("0. Exit");
 
-        Scanner scanner = new Scanner(System.in);
+        var scanner = new Scanner(System.in);
 
-        int choice = scanner.nextInt();
+        var choice = scanner.nextInt();
         switch (choice) {
             case 1 -> {
                 System.out.println();
@@ -81,7 +81,7 @@ public class Interaction {
     }
 
     private void creatingAccount() {
-        RawCredentials rawCredentials = this.generateAccountUseCase.execute();
+        var rawCredentials = this.generateAccountUseCase.execute();
 
         System.out.println("Your card has been created");
         System.out.println("Your card number:");
@@ -92,12 +92,12 @@ public class Interaction {
     }
 
     private void enteringIntoAccount() {
-        Scanner scanner = new Scanner(System.in);
+        var scanner = new Scanner(System.in);
 
         System.out.println("Enter your card number:");
-        String cardNumber = scanner.next();
+        var cardNumber = scanner.next();
         System.out.println("Enter your PIN:");
-        String cardPIN = scanner.next();
+        var cardPIN = scanner.next();
 
         try {
             this.loginUseCase.execute(cardNumber, cardPIN);
@@ -117,7 +117,7 @@ public class Interaction {
     }
 
     private void accountMenu() {
-        Account account = this.getCurrentAccountUseCase.execute();
+        var account = this.getCurrentAccountUseCase.execute();
         if (account == null) {
             throw new RuntimeException("Unauthorized");
         }
@@ -129,9 +129,9 @@ public class Interaction {
         System.out.println("5. Log out");
         System.out.println("0. Exit");
 
-        Scanner scanner = new Scanner(System.in);
+        var scanner = new Scanner(System.in);
 
-        int choice = scanner.nextInt();
+        var choice = scanner.nextInt();
         switch (choice) {
             case 1 -> {
                 System.out.println("Balance: " + account.balance());
@@ -174,8 +174,8 @@ public class Interaction {
     private void addingIncome() {
         System.out.println("Enter income:");
 
-        Scanner scanner = new Scanner(System.in);
-        long income = scanner.nextLong();
+        var scanner = new Scanner(System.in);
+        var income = scanner.nextLong();
 
         this.addIncomeUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber(), income);
 
@@ -183,12 +183,12 @@ public class Interaction {
     }
 
     private void transfering() {
-        Scanner scanner = new Scanner(System.in);
+        var scanner = new Scanner(System.in);
 
         System.out.println("Transfer");
         System.out.println("Enter card number:");
 
-        String cardNumber = scanner.next();
+        var cardNumber = scanner.next();
 
         if (!this.cardNumberService.isValid(cardNumber)) {
             System.out.println("Probably you made a mistake in the card number. Please try again!");
@@ -206,7 +206,7 @@ public class Interaction {
 
         System.out.println("Enter how much money you want to transfer:");
 
-        long amount = scanner.nextLong();
+        var amount = scanner.nextLong();
 
         try {
             this.transferUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber(), cardNumber, amount);
