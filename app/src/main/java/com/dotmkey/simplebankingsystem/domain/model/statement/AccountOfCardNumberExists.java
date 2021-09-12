@@ -13,7 +13,7 @@ public class AccountOfCardNumberExists extends Statement {
 
     @Override
     public boolean check() {
-        return DomainRegistry.instance().accountRepository().ofCardNumber(this.cardNumber) != null;
+        return DomainRegistry.instance().accountRepository().ofCardNumber(this.cardNumber).isPresent();
     }
 
     @Override

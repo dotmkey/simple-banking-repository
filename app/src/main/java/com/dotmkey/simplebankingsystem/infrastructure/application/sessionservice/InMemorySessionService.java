@@ -4,6 +4,8 @@ import com.dotmkey.simplebankingsystem.application.service.SessionService;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.AccountRepository;
 
+import java.util.Optional;
+
 public class InMemorySessionService implements SessionService {
 
     private final AccountRepository accountRepository;
@@ -19,8 +21,10 @@ public class InMemorySessionService implements SessionService {
     }
 
     @Override
-    public Account account() {
-        return this.curAccountNumber == null ? null : this.accountRepository.ofCardNumber(this.curAccountNumber);
+    public Optional<Account> account() {
+        return this.curAccountNumber == null
+            ? Optional.empty()
+            : this.accountRepository.ofCardNumber(this.curAccountNumber);
     }
 
     @Override

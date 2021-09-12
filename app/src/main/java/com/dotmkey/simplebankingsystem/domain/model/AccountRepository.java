@@ -1,10 +1,12 @@
 package com.dotmkey.simplebankingsystem.domain.model;
 
+import java.util.Optional;
+
 public interface AccountRepository {
 
     void save(Account account);
 
-    Account ofCardNumber(String cardNumber);
+    Optional<Account> ofCardNumber(String cardNumber);
 
     void remove(Account account);
 }

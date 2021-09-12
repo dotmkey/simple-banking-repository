@@ -3,6 +3,8 @@ package com.dotmkey.simplebankingsystem.application.usecase;
 import com.dotmkey.simplebankingsystem.application.service.SessionService;
 import com.dotmkey.simplebankingsystem.domain.model.Account;
 
+import java.util.Optional;
+
 public class GetCurrentAccount {
 
     private final SessionService sessionService;
@@ -11,7 +13,7 @@ public class GetCurrentAccount {
         this.sessionService = sessionService;
     }
 
-    public Account execute() {
+    public Optional<Account> execute() {
         return this.sessionService.account();
     }
 }

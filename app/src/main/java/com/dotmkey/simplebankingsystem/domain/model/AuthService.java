@@ -15,7 +15,7 @@ public class AuthService {
     public Account authenticate(String cardNumber, String cardPIN) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        var account = this.accountRepository.ofCardNumber(cardNumber);
+        var account = this.accountRepository.ofCardNumber(cardNumber).orElseThrow();
 
         Assertion.assertA(new CardPINIsCorrectForAccount(account, cardPIN));
 

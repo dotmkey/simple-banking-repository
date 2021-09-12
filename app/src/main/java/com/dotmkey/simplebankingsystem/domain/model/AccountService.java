@@ -22,7 +22,7 @@ public class AccountService {
         String cardNumber;
         do {
             cardNumber = DomainRegistry.instance().cardNumberService().generate();
-        } while (this.accountRepository.ofCardNumber(cardNumber) != null);
+        } while (this.accountRepository.ofCardNumber(cardNumber).isPresent());
 
         var cardPIN = String.valueOf(random.nextInt(9999 - 1000 + 1) + 1000);
 
@@ -35,7 +35,7 @@ public class AccountService {
     public void addIncome(String cardNumber, long income) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        var account = this.accountRepository.ofCardNumber(cardNumber);
+        var account = this.accountRepository.ofCardNumber(cardNumber).orElseThrow();
         account.updateBalance(account.balance() + income);
 
         this.accountRepository.save(account);
@@ -46,8 +46,8 @@ public class AccountService {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberFrom));
         Assertion.assertA(new AccountOfCardNumberExists(cardNumberTo));
 
-        var accountFrom = this.accountRepository.ofCardNumber(cardNumberFrom);
-        var accountTo = this.accountRepository.ofCardNumber(cardNumberTo);
+        var accountFrom = this.accountRepository.ofCardNumber(cardNumberFrom).orElseThrow();
+        var accountTo = this.accountRepository.ofCardNumber(cardNumberTo).orElseThrow();
 
         Assertion.assertA(new AccountCanAffordDebit(accountFrom, amount));
 
@@ -61,6 +61,6 @@ public class AccountService {
     public void removeAccount(String cardNumber) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        this.accountRepository.remove(this.accountRepository.ofCardNumber(cardNumber));
+        this.accountRepository.remove(this.accountRepository.ofCardNumber(cardNumber).orElseThrow());
     }
 }

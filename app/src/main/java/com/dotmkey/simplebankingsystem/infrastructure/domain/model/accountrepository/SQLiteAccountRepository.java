@@ -4,6 +4,7 @@ import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.AccountRepository;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class SQLiteAccountRepository implements AccountRepository {
 
@@ -15,7 +16,7 @@ public class SQLiteAccountRepository implements AccountRepository {
 
     @Override
     public void save(Account account) {
-        if (this.ofCardNumber(account.cardNumber()) == null) {
+        if (this.ofCardNumber(account.cardNumber()).isEmpty()) {
             this.insert(account);
         } else {
             this.update(account);
@@ -48,21 +49,21 @@ public class SQLiteAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account ofCardNumber(String cardNumber) {
+    public Optional<Account> ofCardNumber(String cardNumber) {
         var query = "select * from card where number = ? limit 1";
         try (var statement = this.connection.prepareStatement(query)) {
             statement.setString(1, cardNumber);
             var resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
-                return null;
+                return Optional.empty();
             }
 
-            return new Account(
+            return Optional.of(new Account(
                 resultSet.getString("number"),
                 resultSet.getString("hashed_pin"),
                 resultSet.getInt("balance")
-            );
+            ));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

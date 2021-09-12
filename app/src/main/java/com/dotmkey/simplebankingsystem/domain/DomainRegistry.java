@@ -23,11 +23,7 @@ public final class DomainRegistry {
         CardNumberService cardNumberService,
         AccountRepository accountRepository
     ) {
-        if (instance != null) {
-            return;
-        }
-
-        instance = new DomainRegistry(hasher, cardNumberService, accountRepository);
+        instance = instance == null ? new DomainRegistry(hasher, cardNumberService, accountRepository) : instance;
     }
 
     public static DomainRegistry instance() {

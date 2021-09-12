@@ -117,10 +117,9 @@ public class Interaction {
     }
 
     private void accountMenu() {
-        var account = this.getCurrentAccountUseCase.execute();
-        if (account == null) {
-            throw new RuntimeException("Unauthorized");
-        }
+        var curAccount = this.getCurrentAccountUseCase
+            .execute()
+            .orElseThrow(() -> new RuntimeException("Unauthorized"));
 
         System.out.println("1. Balance");
         System.out.println("2. Add income");
@@ -134,7 +133,7 @@ public class Interaction {
         var choice = scanner.nextInt();
         switch (choice) {
             case 1 -> {
-                System.out.println("Balance: " + account.balance());
+                System.out.println("Balance: " + curAccount.balance());
                 System.out.println();
                 this.accountMenu();
             }
@@ -172,17 +171,25 @@ public class Interaction {
     }
 
     private void addingIncome() {
+        var curAccount = this.getCurrentAccountUseCase
+            .execute()
+            .orElseThrow(() -> new RuntimeException("Unauthorized"));
+
         System.out.println("Enter income:");
 
         var scanner = new Scanner(System.in);
         var income = scanner.nextLong();
 
-        this.addIncomeUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber(), income);
+        this.addIncomeUseCase.execute(curAccount.cardNumber(), income);
 
         System.out.println("Income was added!");
     }
 
     private void transfering() {
+        var curAccount = this.getCurrentAccountUseCase
+            .execute()
+            .orElseThrow(() -> new RuntimeException("Unauthorized"));
+
         var scanner = new Scanner(System.in);
 
         System.out.println("Transfer");
@@ -209,7 +216,7 @@ public class Interaction {
         var amount = scanner.nextLong();
 
         try {
-            this.transferUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber(), cardNumber, amount);
+            this.transferUseCase.execute(curAccount.cardNumber(), cardNumber, amount);
         } catch (AccountCanAffordDebit.InsufficientFundsException e) {
             System.out.println("Not enough money!");
             System.out.println();
@@ -224,7 +231,11 @@ public class Interaction {
     }
 
     private void closingAccount() {
-        this.removeAccountUseCase.execute(this.getCurrentAccountUseCase.execute().cardNumber());
+        var curAccount = this.getCurrentAccountUseCase
+            .execute()
+            .orElseThrow(() -> new RuntimeException("Unauthorized"));
+
+        this.removeAccountUseCase.execute(curAccount.cardNumber());
         this.logoutUseCase.execute();
         System.out.println("The account has been closed!");
     }

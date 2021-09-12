@@ -16,6 +16,6 @@ public class GetAccount {
     public Account execute(String cardNumber) {
         Assertion.assertA(new AccountOfCardNumberExists(cardNumber));
 
-        return this.accountRepository.ofCardNumber(cardNumber);
+        return this.accountRepository.ofCardNumber(cardNumber).orElseThrow();
     }
 }

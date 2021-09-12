@@ -4,6 +4,7 @@ import com.dotmkey.simplebankingsystem.domain.model.Account;
 import com.dotmkey.simplebankingsystem.domain.model.AccountRepository;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class InMemoryAccountRepository implements AccountRepository {
 
@@ -15,8 +16,8 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public Account ofCardNumber(String cardNumber) {
-        return this.storage.get(cardNumber);
+    public Optional<Account> ofCardNumber(String cardNumber) {
+        return Optional.ofNullable(this.storage.get(cardNumber));
     }
 
     @Override
