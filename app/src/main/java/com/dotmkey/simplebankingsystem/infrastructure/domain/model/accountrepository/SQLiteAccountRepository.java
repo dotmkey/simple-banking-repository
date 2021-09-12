@@ -23,12 +23,11 @@ public class SQLiteAccountRepository implements AccountRepository {
     }
 
     private void insert(Account account) {
-        var query = "insert into card (number, pin, hashed_pin, balance) values (?, ?, ?, ?)";
+        var query = "insert into card (number, hashed_pin, balance) values (?, ?, ?)";
         try (var statement = this.connection.prepareStatement(query)) {
             statement.setString(1, account.cardNumber());
-            statement.setString(2, account.cardPIN());
-            statement.setString(3, account.hashedCardPIN());
-            statement.setLong(4, account.balance());
+            statement.setString(2, account.hashedCardPIN());
+            statement.setLong(3, account.balance());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -61,7 +60,6 @@ public class SQLiteAccountRepository implements AccountRepository {
 
             return new Account(
                 resultSet.getString("number"),
-                resultSet.getString("pin"),
                 resultSet.getString("hashed_pin"),
                 resultSet.getInt("balance")
             );

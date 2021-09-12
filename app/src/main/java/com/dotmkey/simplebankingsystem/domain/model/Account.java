@@ -8,7 +8,6 @@ import com.dotmkey.simplebankingsystem.domain.model.statement.CardNumberIsValid;
 public final class Account {
 
     private final String cardNumber;
-    private final String cardPIN;
     private final String hashedCardPIN;
     private Long balance = 0L;
 
@@ -17,14 +16,12 @@ public final class Account {
         Assertion.assertA(new CardNumberIsUnique(cardNumber));
 
         this.cardNumber = cardNumber;
-        this.cardPIN = cardPIN;
         this.hashedCardPIN = DomainRegistry.instance().hasher().hash(cardPIN);
     }
 
     // infrastructure costructor (aka data mapper)
-    public Account(String cardNumber, String cardPIN, String hashedCardPIN, long balance) {
+    public Account(String cardNumber, String hashedCardPIN, long balance) {
         this.cardNumber = cardNumber;
-        this.cardPIN = cardPIN;
         this.hashedCardPIN = hashedCardPIN;
         this.balance = balance;
     }
@@ -35,10 +32,6 @@ public final class Account {
 
     public String cardNumber() {
         return this.cardNumber;
-    }
-
-    public String cardPIN() {
-        return this.cardPIN;
     }
 
     public String hashedCardPIN() {

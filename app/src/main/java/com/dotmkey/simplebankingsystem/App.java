@@ -80,7 +80,6 @@ public class App {
                         "create table if not exists card(" +
                             "id integer primary key, " +
                             "number text not null, " +
-                            "pin text not null, " +
                             "hashed_pin text not null," +
                             "balance integer not null default 0" +
                         ")"
