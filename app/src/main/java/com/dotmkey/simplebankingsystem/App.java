@@ -49,7 +49,9 @@ public class App {
         resolveDomainRegistry();
         resolveSessionService();
         resolveGenerateAccount();
+        resolveGetCurrentAccount();
         resolveLogin();
+        resolveLogout();
         resolveAddIncome();
         resolveGetAccount();
         resolveTransfer();
@@ -58,66 +60,74 @@ public class App {
     }
 
     private static Connection resolveConnection() {
-        if (!DIContainer.containsKey(Connection.class.getName())) {
-            var path = Paths.get((String) argContainer.get("fileName")).toAbsolutePath();
-            if (!Files.exists(path)) {
-                try {
-                    Files.createFile(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        return (Connection) DIContainer.computeIfAbsent(
+            Connection.class.getName(),
+            k -> {
+                var path = Paths.get((String) argContainer.get("fileName")).toAbsolutePath();
+                if (!Files.exists(path)) {
+                    try {
+                        Files.createFile(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
 
-            var dataSource = new SQLiteDataSource();
-            dataSource.setUrl("jdbc:sqlite:" + path);
+                var dataSource = new SQLiteDataSource();
+                dataSource.setUrl("jdbc:sqlite:" + path);
 
-            try {
-                var connection = dataSource.getConnection();
-                try (var statement = connection.createStatement()) {
-                    statement.executeUpdate(
-                        "create table if not exists card(" +
-                            "id integer primary key, " +
-                            "number text not null, " +
-                            "hashed_pin text not null," +
-                            "balance integer not null default 0" +
-                        ")"
-                    );
+                try {
+                    var connection = dataSource.getConnection();
+                    try (var statement = connection.createStatement()) {
+                        statement.executeUpdate(
+                            "create table if not exists card(" +
+                                "id integer primary key, " +
+                                "number text not null, " +
+                                "hashed_pin text not null," +
+                                "balance integer not null default 0" +
+                                ")"
+                        );
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    return connection;
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
-
-                DIContainer.putIfAbsent(Connection.class.getName(), connection);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
             }
-        }
-
-        return (Connection) DIContainer.get(Connection.class.getName());
+        );
     }
 
     private static AccountRepository resolveAccountRepository() {
-        DIContainer.putIfAbsent(AccountRepository.class.getName(), new SQLiteAccountRepository(resolveConnection()));
-        return (AccountRepository) DIContainer.get(AccountRepository.class.getName());
+        return (AccountRepository) DIContainer.computeIfAbsent(
+            AccountRepository.class.getName(),
+            k -> new SQLiteAccountRepository(resolveConnection())
+        );
     }
 
     private static AccountService resolveAccountService() {
-        DIContainer.putIfAbsent(AccountService.class.getName(), new AccountService(resolveAccountRepository()));
-        return (AccountService) DIContainer.get(AccountService.class.getName());
+        return (AccountService) DIContainer.computeIfAbsent(
+            AccountService.class.getName(),
+            k -> new AccountService(resolveAccountRepository())
+        );
     }
 
     private static AuthService resolveAuthService() {
-        DIContainer.putIfAbsent(AuthService.class.getName(), new AuthService(resolveAccountRepository()));
-        return (AuthService) DIContainer.get(AuthService.class.getName());
+        return (AuthService) DIContainer.computeIfAbsent(
+            AuthService.class.getName(),
+            k -> new AuthService(resolveAccountRepository())
+        );
     }
 
     private static CardNumberService resolveCardNumberService() {
-        DIContainer.putIfAbsent(CardNumberService.class.getName(), new CardNumberService());
-        return (CardNumberService) DIContainer.get(CardNumberService.class.getName());
+        return (CardNumberService) DIContainer.computeIfAbsent(
+            CardNumberService.class.getName(),
+            k -> new CardNumberService()
+        );
     }
 
     private static Hasher resolveHasher() {
-        DIContainer.putIfAbsent(Hasher.class.getName(), new SHA512Hasher());
-        return (Hasher) DIContainer.get(Hasher.class.getName());
+        return (Hasher) DIContainer.computeIfAbsent(Hasher.class.getName(), k -> new SHA512Hasher());
     }
 
     private static DomainRegistry resolveDomainRegistry() {
@@ -126,54 +136,72 @@ public class App {
     }
 
     private static SessionService resolveSessionService() {
-        DIContainer.putIfAbsent(SessionService.class.getName(), new InMemorySessionService(resolveAccountRepository()));
-        return (SessionService) DIContainer.get(SessionService.class.getName());
+        return (SessionService) DIContainer.computeIfAbsent(
+            SessionService.class.getName(),
+            k -> new InMemorySessionService(resolveAccountRepository())
+        );
     }
 
     private static GenerateAccount resolveGenerateAccount() {
-        DIContainer.putIfAbsent(GenerateAccount.class.getName(), new GenerateAccount(resolveAccountService()));
-        return (GenerateAccount) DIContainer.get(GenerateAccount.class.getName());
+        return (GenerateAccount) DIContainer.computeIfAbsent(
+            GenerateAccount.class.getName(),
+            k -> new GenerateAccount(resolveAccountService())
+        );
     }
 
     private static Login resolveLogin() {
-        DIContainer.putIfAbsent(Login.class.getName(), new Login(resolveAuthService(), resolveSessionService()));
-        return (Login) DIContainer.get(Login.class.getName());
+        return (Login) DIContainer.computeIfAbsent(
+            Login.class.getName(),
+            k -> new Login(resolveAuthService(), resolveSessionService())
+        );
     }
 
     private static Logout resolveLogout() {
-        DIContainer.putIfAbsent(Logout.class.getName(), new Logout(resolveSessionService()));
-        return (Logout) DIContainer.get(Logout.class.getName());
+        return (Logout) DIContainer.computeIfAbsent(
+            Logout.class.getName(),
+            k -> new Logout(resolveSessionService())
+        );
     }
 
     private static GetCurrentAccount resolveGetCurrentAccount() {
-        DIContainer.putIfAbsent(GetCurrentAccount.class.getName(), new GetCurrentAccount(resolveSessionService()));
-        return (GetCurrentAccount) DIContainer.get(GetCurrentAccount.class.getName());
+        return (GetCurrentAccount) DIContainer.computeIfAbsent(
+            GetCurrentAccount.class.getName(),
+            k -> new GetCurrentAccount(resolveSessionService())
+        );
     }
 
     private static AddIncome resolveAddIncome() {
-        DIContainer.putIfAbsent(AddIncome.class.getName(), new AddIncome(resolveAccountService()));
-        return (AddIncome) DIContainer.get(AddIncome.class.getName());
+        return (AddIncome) DIContainer.computeIfAbsent(
+            AddIncome.class.getName(),
+            k -> new AddIncome(resolveAccountService())
+        );
     }
 
     private static GetAccount resolveGetAccount() {
-        DIContainer.putIfAbsent(GetAccount.class.getName(), new GetAccount(resolveAccountRepository()));
-        return (GetAccount) DIContainer.get(GetAccount.class.getName());
+        return (GetAccount) DIContainer.computeIfAbsent(
+            GetAccount.class.getName(),
+            k -> new GetAccount(resolveAccountRepository())
+        );
     }
 
     private static Transfer resolveTransfer() {
-        DIContainer.putIfAbsent(Transfer.class.getName(), new Transfer(resolveAccountService()));
-        return (Transfer) DIContainer.get(Transfer.class.getName());
+        return (Transfer) DIContainer.computeIfAbsent(
+            Transfer.class.getName(),
+            k -> new Transfer(resolveAccountService())
+        );
     }
 
     private static RemoveAccount resolveRemoveAccount() {
-        DIContainer.putIfAbsent(RemoveAccount.class.getName(), new RemoveAccount(resolveAccountService()));
-        return (RemoveAccount) DIContainer.get(RemoveAccount.class.getName());
+        return (RemoveAccount) DIContainer.computeIfAbsent(
+            RemoveAccount.class.getName(),
+            k -> new RemoveAccount(resolveAccountService())
+        );
     }
 
     private static Interaction resolveInteraction() {
-        DIContainer.putIfAbsent(
+        return (Interaction) DIContainer.computeIfAbsent(
             Interaction.class.getName(),
-            new Interaction(
+            k -> new Interaction(
                 resolveGenerateAccount(),
                 resolveGetCurrentAccount(),
                 resolveLogin(),
@@ -185,6 +213,5 @@ public class App {
                 resolveRemoveAccount()
             )
         );
-        return (Interaction) DIContainer.get(Interaction.class.getName());
     }
 }
