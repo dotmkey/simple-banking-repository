@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class Interaction {
 
+    private final Scanner scanner = new Scanner(System.in);
     private final GenerateAccount generateAccountUseCase;
     private final GetCurrentAccount getCurrentAccountUseCase;
     private final Login loginUseCase;
@@ -52,9 +53,7 @@ public class Interaction {
         System.out.println("2. Log into account");
         System.out.println("0. Exit");
 
-        var scanner = new Scanner(System.in);
-
-        var choice = scanner.nextInt();
+        var choice = this.scanner.nextInt();
         switch (choice) {
             case 1 -> {
                 System.out.println();
@@ -90,12 +89,10 @@ public class Interaction {
     }
 
     private void enteringIntoAccount() {
-        var scanner = new Scanner(System.in);
-
         System.out.println("Enter your card number:");
-        var cardNumber = scanner.next();
+        var cardNumber = this.scanner.next();
         System.out.println("Enter your PIN:");
-        var cardPIN = scanner.next();
+        var cardPIN = this.scanner.next();
 
         try {
             this.loginUseCase.execute(cardNumber, cardPIN);
@@ -126,9 +123,7 @@ public class Interaction {
         System.out.println("5. Log out");
         System.out.println("0. Exit");
 
-        var scanner = new Scanner(System.in);
-
-        var choice = scanner.nextInt();
+        var choice = this.scanner.nextInt();
         switch (choice) {
             case 1 -> {
                 System.out.println("Balance: " + curAccount.balance());
@@ -175,8 +170,7 @@ public class Interaction {
 
         System.out.println("Enter income:");
 
-        var scanner = new Scanner(System.in);
-        var income = scanner.nextLong();
+        var income = this.scanner.nextLong();
 
         this.addIncomeUseCase.execute(curAccount, income);
 
@@ -188,12 +182,10 @@ public class Interaction {
             .execute()
             .orElseThrow(() -> new RuntimeException("Unauthorized"));
 
-        var scanner = new Scanner(System.in);
-
         System.out.println("Transfer");
         System.out.println("Enter card number:");
 
-        var cardNumber = scanner.next();
+        var cardNumber = this.scanner.next();
 
         if (!this.cardNumberService.isValid(cardNumber)) {
             System.out.println("Probably you made a mistake in the card number. Please try again!");
@@ -211,7 +203,7 @@ public class Interaction {
 
         System.out.println("Enter how much money you want to transfer:");
 
-        var amount = scanner.nextLong();
+        var amount = this.scanner.nextLong();
 
         try {
             this.transferUseCase.execute(curAccount.cardNumber(), cardNumber, amount);
